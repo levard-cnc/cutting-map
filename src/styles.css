@@ -1,0 +1,124 @@
+* {
+  box-sizing: border-box;
+  font-family: Segoe UI, Tahoma, Arial, sans-serif;
+  font-size: 13px;
+}
+
+body {
+  margin: 0;
+  background: #f0f0f0;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+}
+
+/* Левая панель */
+.controls {
+  width: 360px;
+  background: #f6f6f6;
+  border-right: 1px solid #b5b5b5;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.controls h3 {
+  font-size: 22px;
+  margin: 0 0 12px 0;
+}
+
+.group {
+  border: 1px solid #b5b5b5;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #fafafa;
+}
+
+.group-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+/* Формы */
+label {
+  display: block;
+  margin-bottom: 4px;
+}
+
+select,
+input[type="number"],
+input[type="text"] {
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 3px;
+}
+
+.inline {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.inline > * {
+  flex: 1;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+button {
+  padding: 5px 10px;
+  margin-top: 5px;
+}
+
+button.full {
+  width: 100%;
+}
+
+/* Список деталей */
+.list {
+  height: 150px;
+  border: 1px solid #b5b5b5;
+  background: white;
+  overflow-y: auto;
+  margin-bottom: 6px;
+}
+
+.list-item {
+  padding: 2px 4px;
+  border-bottom: 1px solid #eee;
+  font-size: 12px;
+}
+
+/* Правая часть — лист */
+.sheet {
+  flex: 1;
+  background: #dcdcdc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sheet-inner {
+  position: relative;
+  width: 700px;
+  height: 520px;
+  background: white;
+  border: 1px solid #8a8a8a;
+}
+
+/* Детали на листе */
+.detail {
+  position: absolute;
+  border: 1px solid black;
+  background: rgba(255,255,255,0.8);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
