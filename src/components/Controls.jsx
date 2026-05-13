@@ -39,25 +39,7 @@ export default function Controls({
     return true;
   }
 
-    function notifyParams() {
-    if (!validate()) return;
-
-    onParamsChange({
-        basic: basicTpl,
-        sub: subTpl,
-        final: finalTpl,
-        width: Number(width),
-        height: Number(height),
-        glass,
-        diag,
-        vert,
-        horiz,
-        knife: Number(knife),
-        thermo: diag || vert || horiz
-    });
-    }
-
-    function addDetail() {
+  function addDetail() {
     if (!validate()) return;
 
     onAdd({
@@ -141,9 +123,9 @@ export default function Controls({
       <h3>Раскрой листа</h3>
 
       <div className="group">
-        <div className="group-title">Рисунки</div>
+        <div className="group-title">Шаблоны</div>
 
-        <label>Рельеф рисунка</label>
+        <label>Базовый шаблон</label>
         <select value={basicTpl} onChange={e => setBasicTpl(e.target.value)}>
           <option value="">—</option>
           {basic.map(b => (
@@ -151,7 +133,7 @@ export default function Controls({
           ))}
         </select>
 
-        <label>Вариант рельефа</label>
+        <label>Производный шаблон</label>
         <select value={subTpl} onChange={e => setSubTpl(e.target.value)}>
           <option value="">—</option>
           {sub.filter(s => s.from === basicTpl).map((s, i) => (
@@ -159,7 +141,7 @@ export default function Controls({
           ))}
         </select>
 
-        <label>Конечный рельеф</label>
+        <label>Конечный шаблон</label>
         <select value={finalTpl} onChange={e => setFinalTpl(e.target.value)}>
           <option value="">Авто</option>
           {finals.filter(f => f.from === subTpl).map((f, i) => (
@@ -169,7 +151,7 @@ export default function Controls({
       </div>
 
       <div className="group">
-        <div className="group-title">декоративный шов</div>
+        <div className="group-title">Термошвы</div>
         <label><input type="checkbox" checked={diag} onChange={e => setDiag(e.target.checked)} /> Диагональный</label>
         <label><input type="checkbox" checked={vert} onChange={e => setVert(e.target.checked)} /> Вертикальный</label>
         <label><input type="checkbox" checked={horiz} onChange={e => setHoriz(e.target.checked)} /> Горизонтальный</label>
@@ -186,10 +168,10 @@ export default function Controls({
 
         <label className="checkbox">
           <input type="checkbox" checked={glass} onChange={e => setGlass(e.target.checked)} />
-          Фасад под рамку
+          Фасад "под стекло"
         </label>
 
-        <label>Диаметр режущей фрезы</label>
+        <label>Диаметр ножа</label>
         <select value={knife} onChange={e => setKnife(e.target.value)}>
           <option value="12">12</option>
           <option value="8">8</option>
@@ -200,7 +182,7 @@ export default function Controls({
       </div>
 
       <div className="group">
-        <div className="group-title">Список деталей раскроя</div>
+        <div className="group-title">Список деталей</div>
         <div className="list">
           {details.map((d, i) => (
             <div key={i} className="list-item">
@@ -216,7 +198,7 @@ export default function Controls({
       <div className="group">
         <label className="checkbox">
           <input type="checkbox" checked={addDate} onChange={e => setAddDate(e.target.checked)} />
-          Дата и время в имени файла
+          Добавить дату и время
         </label>
 
         <input
