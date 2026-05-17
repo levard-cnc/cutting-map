@@ -122,3 +122,9 @@ button.full {
   align-items: center;
   justify-content: center;
 }
+input[type="number"],
+input[type="text"] {
+  color: #000;
+  background-color: #fff;
+  caret-color: #ddd;
+}
