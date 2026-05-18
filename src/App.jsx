@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { loadLines, loadPairs, loadSizes } from "./data/loaders";
 import { selectFinalTemplate } from "./utils/sizeSelector";
+import { findPlacement } from "./utils/placement";
 import Controls from "./components/Controls.jsx";
 import CanvasSheet from "./components/CanvasSheet.jsx";
 import "./styles.css";
@@ -37,32 +38,44 @@ export default function App() {
         loadSizes("sizes.txt").then(setSizes);
     }, []);
 
-    function placeDetail(xMm, yMm) {
+    const autoFinal = useMemo(() => {
+        if (!pending.sub || !pending.width || !pending.height) return "";
+        return selectFinalTemplate({
+            subTemplate: pending.sub,
+            width: pending.width,
+            height: pending.height,
+            glass: pending.glass,
+            sizes
+        });
+    }, [pending.sub, pending.width, pending.height, pending.glass, sizes]);
+
+    function placeDetail(clickXMm, clickYMm) {
         if (!pending.width || !pending.height) return;
 
-        const finalTemplate =
-            pending.final ||
-            selectFinalTemplate({
-                subTemplate: pending.sub,
-                width: pending.width,
-                height: pending.height,
-                glass: pending.glass,
-                sizes
-            });
+        const cutterW = pending.knife || 0;
+        const fullW = pending.width + cutterW;
+        const fullH = pending.height + cutterW;
+
+        const pos = findPlacement(clickXMm, clickYMm, fullW, fullH, details, SHEET_W, SHEET_H);
+        if (!pos) return;
+
+        const finalTemplate = pending.final || autoFinal;
 
         setDetails(prev => [
             ...prev,
             {
                 ...pending,
                 final: finalTemplate,
-                x1: xMm,
-                y1: yMm,
-                x2: xMm + pending.width,
-                y2: yMm + pending.height,
-                cx1: xMm,
-                cy1: yMm,
-                cx2: xMm + pending.width,
-                cy2: yMm + pending.height
+                x1: pos.x,
+                y1: pos.y,
+                x2: pos.x + fullW,
+                y2: pos.y + fullH,
+                cx1: pos.x + cutterW / 2,
+                cy1: pos.y + cutterW / 2,
+                cx2: pos.x + fullW - cutterW / 2,
+                cy2: pos.y + fullH - cutterW / 2,
+                fullW,
+                fullH
             }
         ]);
     }
@@ -73,6 +86,7 @@ export default function App() {
                 basic={basic}
                 sub={sub}
                 finals={finals}
+                autoFinal={autoFinal}
                 pending={pending}
                 setPending={setPending}
                 details={details}

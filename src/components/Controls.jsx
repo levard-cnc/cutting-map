@@ -5,6 +5,7 @@ export default function Controls({
                                    basic,
                                    sub,
                                    finals,
+                                   autoFinal,
                                    pending,
                                    setPending,
                                    details,
@@ -83,9 +84,9 @@ export default function Controls({
         <h3>Раскрой листа</h3>
 
         <div className="group">
-          <div className="group-title">Рисунки</div>
+          <div className="group-title">Шаблоны</div>
 
-          <label>Рельеф рисунка</label>
+          <label>Базовый шаблон</label>
           <select value={pending.basic} onChange={e => set("basic", e.target.value)}>
             <option value="">—</option>
             {basic.map(b => (
@@ -93,7 +94,7 @@ export default function Controls({
             ))}
           </select>
 
-          <label>Вариант рельефа</label>
+          <label>Производный шаблон</label>
           <select value={pending.sub} onChange={e => set("sub", e.target.value)}>
             <option value="">—</option>
             {sub.filter(s => s.from === pending.basic).map((s, i) => (
@@ -101,9 +102,9 @@ export default function Controls({
             ))}
           </select>
 
-          <label>Конечный рельеф</label>
-          <select value={pending.final} onChange={e => set("final", e.target.value)}>
-            <option value="">Авто</option>
+          <label>Конечный шаблон</label>
+          <select value={pending.final || autoFinal} onChange={e => set("final", e.target.value)}>
+            <option value=""></option>
             {finals.filter(f => f.from === pending.sub).map((f, i) => (
                 <option key={i} value={f.to}>{f.to}</option>
             ))}
@@ -111,7 +112,7 @@ export default function Controls({
         </div>
 
         <div className="group">
-          <div className="group-title">Декоративный шов</div>
+          <div className="group-title">Термошвы</div>
           <label><input type="checkbox" checked={pending.diag} onChange={e => set("diag", e.target.checked)} /> Диагональный</label>
           <label><input type="checkbox" checked={pending.vert} onChange={e => set("vert", e.target.checked)} /> Вертикальный</label>
           <label><input type="checkbox" checked={pending.horiz} onChange={e => set("horiz", e.target.checked)} /> Горизонтальный</label>
@@ -121,30 +122,34 @@ export default function Controls({
           <div className="group-title">Размеры</div>
 
           <label>Ширина, мм</label>
-          <input type="number" value={pending.width || ""} onChange={e => set("width", Number(e.target.value))} />
+          <input type="number" value={pending.width || ""} onChange={e => setPending(p => ({ ...p, width: Number(e.target.value), final: "" }))} />
 
           <label>Длина, мм</label>
-          <input type="number" value={pending.height || ""} onChange={e => set("height", Number(e.target.value))} />
+          <input type="number" value={pending.height || ""} onChange={e => setPending(p => ({ ...p, height: Number(e.target.value), final: "" }))} />
 
           <label className="checkbox">
-            <input type="checkbox" checked={pending.glass} onChange={e => set("glass", e.target.checked)} />
-            Фасад "под рамку"
+            <input type="checkbox" checked={pending.glass} onChange={e => setPending(p => ({ ...p, glass: e.target.checked, final: "" }))} />
+            Фасад "под стекло"
           </label>
 
-          <label>Диаметр режущей фрезы</label>
+          <label>Диаметр ножа</label>
           <select value={pending.knife} onChange={e => set("knife", Number(e.target.value))}>
             <option value={12}>12</option>
             <option value={8}>8</option>
             <option value={6}>6</option>
           </select>
+
+          <button onClick={() => setPending(p => ({ ...p, width: p.height, height: p.width, final: "" }))}>
+            Поменять Ш↔В
+          </button>
         </div>
 
         <div className="group">
-          <div className="group-title">Список деталей раскроя</div>
+          <div className="group-title">Список деталей</div>
           <div className="list">
             {details.map((d, i) => (
                 <div key={i} className="list-item">
-                  {i}: {d.width}×{d.height} ({d.final})
+                  {d.final} ({d.width}x{d.height}) ({d.x1},{d.y1})-({d.x2},{d.y2})
                 </div>
             ))}
           </div>
@@ -156,7 +161,7 @@ export default function Controls({
         <div className="group">
           <label className="checkbox">
             <input type="checkbox" checked={addDate} onChange={e => setAddDate(e.target.checked)} />
-            Дата и время в имени файла
+            Добавить дату и время
           </label>
 
           <input value={filename} onChange={e => setFilename(e.target.value)} />

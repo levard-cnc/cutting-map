@@ -15,11 +15,15 @@ export async function loadPairs(path) {
 
 export async function loadSizes(path) {
   const lines = await loadLines(path);
-  return lines.map(l => ({
-    sub: l.substring(0, 30).trim(),
-    final: l.substring(30, 60).trim(),
-    min: Number(l.substring(60, 65)),
-    max: Number(l.substring(65, 71)),
-    glass: l.substring(71).includes("True")
-  }));
+  return lines.map(l => {
+    const rest = l.substring(60);
+    const m = rest.match(/\s*(\d+)\s+(\d+)(True|False)/);
+    return {
+      sub: l.substring(0, 30).trim(),
+      final: l.substring(30, 60).trim(),
+      min: m ? Number(m[1]) : 0,
+      max: m ? Number(m[2]) : 0,
+      glass: m ? m[3] === "True" : false
+    };
+  });
 }
